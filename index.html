@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Ye Amsterdam — Service Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d1b2a;--navy2:#1a2d42;--gold:#c9a84c;--gold-l:#fdf6e3;--gold-m:#e8d5a3;
+  --surface:#ffffff;--bg:#f4f6f9;--surface2:#f0f2f5;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);
+  --text:#0d1b2a;--text2:#4a5568;--text3:#8a9ab0;
+  --green:#276749;--green-l:#e6f4ed;
+  --red:#991b1b;--red-l:#fef2f2;
+  --purple:#5b21b6;--purple-l:#ede9fe;
+  --blue:#1e40af;--blue-l:#eff6ff;
+  --amber:#92400e;--amber-l:#fffbeb;
+  --sans:'Inter',sans-serif;--serif:'Playfair Display',serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+
+/* ── HEADER ── */
+.hdr{background:var(--navy);color:#fff;padding:1.1rem 2rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
+.hdr-cross{font-size:24px;color:var(--gold)}
+.hdr-title{font-family:var(--serif);font-size:20px;font-weight:500;color:#fff;letter-spacing:0.01em}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:1px;letter-spacing:0.08em;text-transform:uppercase}
+.hdr-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.hdr-btn{padding:6px 14px;background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.4);border-radius:6px;color:var(--gold);font-family:var(--sans);font-size:12px;font-weight:500;cursor:pointer;transition:background .15s}
+.hdr-btn:hover{background:rgba(201,168,76,0.35)}
+.hdr-date{font-size:12px;color:rgba(255,255,255,0.45)}
+
+/* ── TABS ── */
+.tabs{background:var(--navy2);display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid rgba(201,168,76,0.15)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:12px 18px;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;font-family:var(--sans)}
+.tab:hover{color:rgba(255,255,255,0.75)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* ── LAYOUT ── */
+.page{display:none;max-width:900px;margin:0 auto;padding:1.75rem 1.5rem}
+.page.active{display:block}
+
+/* ── SECTION BLOCKS ── */
+.sec{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:14px;overflow:hidden}
+.sec-hdr{display:flex;align-items:center;gap:10px;padding:1rem 1.25rem;cursor:pointer;user-select:none;border-bottom:1px solid var(--border)}
+.sec-hdr:hover{background:var(--surface2)}
+.sec-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--gold);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--serif)}
+.sec-ico{font-size:18px;flex-shrink:0}
+.sec-title{font-family:var(--serif);font-size:17px;font-weight:500;flex:1}
+.sec-arr{font-size:13px;color:var(--text3);transition:transform .2s}
+.sec-arr.open{transform:rotate(180deg)}
+.sec-body{padding:1.25rem;display:none}
+.sec-body.open{display:block}
+.sec-done{font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px;flex-shrink:0}
+
+/* ── FORM ELEMENTS ── */
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.ff{display:flex;flex-direction:column;gap:4px}
+.lbl{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em}
+input[type=text],input[type=number],input[type=url],input[type=time],input[type=date],select,textarea{
+  padding:9px 11px;border:1px solid var(--border2);border-radius:8px;font-family:var(--sans);font-size:13px;
+  background:var(--surface);color:var(--text);width:100%;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12)}
+textarea{resize:vertical;min-height:70px}
+.mb{margin-bottom:12px}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s;border:1px solid var(--border2);background:transparent;color:var(--text);text-decoration:none}
+.btn:hover{background:var(--surface2)}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-gold:hover{background:#b8922e}
+.btn-navy{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-red{color:var(--red);border-color:rgba(153,27,27,0.2)}
+.btn-red:hover{background:var(--red-l)}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+
+/* ── ATTENDANCE CARDS ── */
+.att-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1.25rem}
+.att-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem}
+.att-card-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.att-number{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.att-number label{font-size:12px;color:var(--text2);min-width:100px}
+.att-number input{width:80px;text-align:center;font-size:15px;font-weight:600;padding:7px}
+.att-total{font-size:13px;font-weight:600;color:var(--navy);padding:8px 10px;background:var(--gold-l);border-radius:8px;text-align:center;margin-top:6px}
+
+/* ── TEAM GRID ── */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:12px}
+.team-slot{display:flex;flex-direction:column;gap:3px}
+.team-slot label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.team-slot input{padding:7px 9px;font-size:12px}
+
+/* ── SONG ROW ── */
+.song-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;position:relative}
+.song-row-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.song-remove{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3)}
+.song-remove:hover{color:var(--red)}
+.yt-preview{margin-top:8px;display:none}
+.yt-preview.show{display:block}
+.yt-embed{width:100%;aspect-ratio:16/9;border-radius:8px;border:none}
+
+/* ── FILE UPLOAD ── */
+.file-upload{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.file-label{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1.5px dashed var(--border2);border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;color:var(--text2);transition:all .15s}
+.file-label:hover{border-color:var(--gold);color:var(--gold-amber,#92400e)}
+.file-label input{display:none}
+.file-name{font-size:12px;color:var(--text3);font-style:italic}
+
+/* ── TOGGLE SECTION ── */
+.toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:12px;cursor:pointer;transition:background .2s}
+.toggle input:checked+.toggle-slider{background:var(--gold)}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.toggle-slider::before{transform:translateX(20px)}
+.toggle-label{font-size:13px;font-weight:500;color:var(--text)}
+.toggle-content{display:none;background:var(--surface2);border-radius:10px;padding:1rem;margin-bottom:12px;border:1px solid var(--border)}
+.toggle-content.open{display:block}
+
+/* ── RESTRICTED BADGE ── */
+.restricted-banner{display:flex;align-items:center;gap:8px;background:var(--purple-l);border:1px solid rgba(91,33,182,0.2);border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:var(--purple)}
+.lock-icon{font-size:14px}
+
+/* ── PIN MODAL ── */
+.pin-overlay{display:none;position:fixed;inset:0;background:rgba(13,27,42,0.75);z-index:500;align-items:center;justify-content:center}
+.pin-overlay.open{display:flex}
+.pin-box{background:#fff;border-radius:16px;padding:2rem;width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.pin-title{font-family:var(--serif);font-size:20px;font-weight:500;margin-bottom:6px}
+.pin-sub{font-size:13px;color:var(--text2);margin-bottom:1.25rem}
+.pin-input{width:100%;text-align:center;font-size:24px;font-weight:600;letter-spacing:0.2em;padding:12px;margin-bottom:1rem;border:2px solid var(--border2);border-radius:10px}
+.pin-input:focus{outline:none;border-color:var(--gold)}
+.pin-err{font-size:12px;color:var(--red);margin-bottom:10px;display:none}
+.pin-actions{display:flex;gap:8px;justify-content:center}
+
+/* ── SUMMARY / PRINT ── */
+.summary-table{width:100%;border-collapse:collapse;font-size:13px}
+.summary-table th{background:var(--navy);color:var(--gold);padding:9px 12px;text-align:left;font-size:11px;letter-spacing:0.06em;text-transform:uppercase}
+.summary-table td{padding:9px 12px;border-bottom:1px solid var(--border)}
+.summary-table tr:last-child td{border-bottom:none}
+.summary-table tr:nth-child(even) td{background:var(--surface2)}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.25rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px 14px}
+.stat-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.stat-val{font-size:22px;font-weight:300;font-family:var(--serif);color:var(--text)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:var(--gold);padding:10px 22px;border-radius:8px;font-size:13px;font-weight:500;transition:transform .3s;z-index:600;pointer-events:none;border:1px solid rgba(201,168,76,0.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media print{
+  .hdr,.tabs,.hdr-btn,.btn,.sec-arr,.file-label,.toggle,.pin-overlay,.toast{display:none!important}
+  .page{display:block!important;padding:0}
+  .sec-body{display:block!important}
+  body{background:#fff}
+}
+@media(max-width:640px){
+  .att-grid,.stat-row{grid-template-columns:1fr 1fr}
+  .row2,.row3{grid-template-columns:1fr}
+  .page{padding:1rem}
+  .hdr{padding:.9rem 1rem}
+  .tabs{gap:0}
+  .tab{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- PIN MODAL for restricted slides -->
+<div class="pin-overlay" id="pin-overlay">
+  <div class="pin-box">
+    <div style="font-size:32px;margin-bottom:8px">🔒</div>
+    <div class="pin-title">Restricted Access</div>
+    <div class="pin-sub">Enter the PIN to view preaching slides</div>
+    <input class="pin-input" id="pin-input" type="password" maxlength="6" placeholder="••••" oninput="checkPin()"/>
+    <div class="pin-err" id="pin-err">Incorrect PIN. Try again.</div>
+    <div class="pin-actions">
+      <button class="btn btn-gold" onclick="submitPin()">Unlock</button>
+      <button class="btn" onclick="closePin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-cross">✝</div>
+  <div>
+    <div class="hdr-title">Go Ye Amsterdam</div>
+    <div class="hdr-sub">Service Report &amp; Order of Service</div>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-date" id="hdr-date"></span>
+    <button class="hdr-btn" onclick="saveAll()">💾 Save</button>
+    <button class="hdr-btn" onclick="window.print()">🖨 Print</button>
+    <button class="hdr-btn" onclick="exportJSON()">⬇ Export</button>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="goTab('attendance',this)">📊 Attendance</button>
+  <button class="tab" onclick="goTab('teams',this)">👥 Teams</button>
+  <button class="tab" onclick="goTab('service',this)">📋 Order of Service</button>
+  <button class="tab" onclick="goTab('summary',this)">📄 Summary</button>
+</div>
+
+<!-- ═══════════════════════════════
+     ATTENDANCE TAB
+═══════════════════════════════ -->
+<div class="page active" id="page-attendance">
+
+  <div class="stat-row">
+    <div class="stat"><div class="stat-lbl">Total confirmations</div><div class="stat-val" id="st-total-conf">0</div></div>
+    <div class="stat"><div class="stat-lbl">First timers</div><div class="stat-val" id="st-total-ft">0</div></div>
+    <div class="stat"><div class="stat-lbl">Visitors</div><div class="stat-val" id="st-total-vis">0</div></div>
+    <div class="stat"><div class="stat-lbl">Grand total</div><div class="stat-val" id="st-grand">0</div></div>
+  </div>
+
+  <div class="att-grid">
+    <!-- ZUID -->
+    <div class="att-card">
+      <div class="att-card-title">🏛 Confirmations — Zuid</div>
+      <div class="att-number"><label>Total confirmed</label><input type="number" id="a-z-conf" value="0" min="0" oninput="calcTotals()"/></div>
+      <div class="att-number"><label>First timers</label><input type="number" id="a-z-ft" value="0" min="0" oninput="calcTotals()"/></div>
+      <div class="att-number"><label>Visitors</label><input type="number" id="a-z-vis" value="0" min="0" oninput="calcTotals()"/></div>
+      <div class="att-total" id="a-z-total">Zuid total: 0</div>
+    </div>
+    <!-- ZUIDOOST -->
+    <div class="att-card">
+      <div class="att-card-title">🏛 Confirmations — Zuidoost</div>
+      <div class="att-number"><label>Total confirmed</label><input type="number" id="a-zo-conf" value="0" min="0" oninput="calcTotals()"/></div>
+      <div class="att-number"><label>First timers</label><input type="number" id="a-zo-ft" value="0" min="0" oninput="calcTotals()"/></div>
+      <div class="att-number"><label>Visitors</label><input type="number" id="a-zo-vis" value="0" min="0" oninput="calcTotals()"/></div>
+      <div class="att-total" id="a-zo-total">Zuidoost total: 0</div>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-bottom:14px">
+    <div style="padding:1rem 1.25rem">
+      <div style="font-family:var(--serif);font-size:16px;font-weight:500;margin-bottom:12px">Service date &amp; notes</div>
+      <div class="row2">
+        <div class="ff"><span class="lbl">Date</span><input type="date" id="a-date"/></div>
+        <div class="ff"><span class="lbl">Service time</span><input type="time" id="a-time"/></div>
+      </div>
+      <div class="ff mb"><span class="lbl">General notes</span><textarea id="a-notes" placeholder="Any general notes about today's service…"></textarea></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════
+     TEAMS TAB
+═══════════════════════════════ -->
+<div class="page" id="page-teams">
+
+  <!-- Airport Stars -->
+  <div class="sec">
+    <div class="sec-hdr" onclick="togSec(this)">
+      <div class="sec-ico">✈️</div><div class="sec-title">Airport Stars</div><span class="sec-arr open">▾</span>
+    </div>
+    <div class="sec-body open">
+      <div class="team-grid">
+        <div class="team-slot"><label>Star 1</label><input type="text" id="airport-1" placeholder="Name"/></div>
+        <div class="team-slot"><label>Star 2</label><input type="text" id="airport-2" placeholder="Name"/></div>
+        <div class="team-slot"><label>Star 3</label><input type="text" id="airport-3" placeholder="Name"/></div>
+        <div class="team-slot"><label>Star 4</label><input type="text" id="airport-4" placeholder="Name"/></div>
+        <div class="team-slot"><label>Star 5</label><input type="text" id="airport-5" placeholder="Name"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dancing Stars -->
+  <div class="sec">
+    <div class="sec-hdr" onclick="togSec(this)">
+      <div class="sec-ico">💃</div><div class="sec-title">Dancing Stars</div><span class="sec-arr open">▾</span>
+    </div>
+    <div class="sec-body open">
+      <div class="team-grid">
+        <div class="team-slot"><label>Dancer 1</label><input type="text" id="dance-team-1" placeholder="Name"/></div>
+        <div class="team-slot"><label>Dancer 2</label><input type="text" id="dance-team-2" placeholder="Name"/></div>
+        <div class="team-slot"><label>Dancer 3</label><input type="text" id="dance-team-3" placeholder="Name"/></div>
+        <div class="team-slot"><label>Dancer 4</label><input type="text" id="dance-team-4" placeholder="Name"/></div>
+        <div class="team-slot"><label>Dancer 5</label><input type="text" id="dance-team-5" placeholder="Name"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Media Team -->
+  <div class="sec">
+    <div class="sec-hdr" onclick="togSec(this)">
+      <div class="sec-ico">🎬</div><div class="sec-title">Media Team</div><span class="sec-arr open">▾</span>
+    </div>
+    <div class="sec-body open">
+      <div class="team-grid">
+        <div class="team-slot"><label>Media 1</label><input type="text" id="media-1" placeholder="Name"/></div>
+        <div class="team-slot"><label>Media 2</label><input type="text" id="media-2" placeholder="Name"/></div>
+        <div class="team-slot"><label>Media 3</label><input type="text" id="media-3" placeholder="Name"/></div>
+        <div class="team-slot"><label>Media 4</label><input type="text" id="media-4" placeholder="Name"/></div>
+        <div class="team-slot"><label>Media 5</label><input type="text" id="media-5" placeholder="Name"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup Team -->
+  <div class="sec">
+    <div class="sec-hdr" onclick="togSec(this)">
+      <div class="sec-ico">🔧</div><div class="sec-title">Setup Team</div><span class="sec-arr open">▾</span>
+    </div>
+    <div class="sec-body open">
+      <div class="team-grid">
+        <div class="team-slot"><label>Member 1</label><input type="text" id="setup-1" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 2</label><input type="text" id="setup-2" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 3</label><input type="text" id="setup-3" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 4</label><input type="text" id="setup-4" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 5</label><input type="text" id="setup-5" placeholder="Name"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ushers -->
+  <div class="sec">
+    <div class="sec-hdr" onclick="togSec(this)">
+      <div class="sec-ico">🤝</div><div class="sec-title">Ushers</div><span class="sec-arr open">▾</span>
+    </div>
+    <div class="sec-body open">
+      <div class="team-grid">
+        <div class="team-slot"><label>Usher 1</label><input type="text" id="usher-1" placeholder="Name"/></div>
+        <div class="team-slot"><label>Usher 2</label><input type="text" id="usher-2" placeholder="Name"/></div>
+        <div class="team-slot"><label>Usher 3</label><input type="text" id="usher-3" placeholder="Name"/></div>
+        <div class="team-slot"><label>Usher 4</label><input type="text" id="usher-4" placeholder="Name"/></div>
+        <div class="team-slot"><label>Usher 5</label><input type="text" id="usher-5" placeholder="Name"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Worship Team -->
+  <div class="sec">
+    <div class="sec-hdr" onclick="togSec(this)">
+      <div class="sec-ico">🎹</div><div class="sec-title">Worship Team</div><span class="sec-arr open">▾</span>
+    </div>
+    <div class="sec-body open">
+      <div class="team-grid">
+        <div class="team-slot"><label>Member 1</label><input type="text" id="worship-team-1" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 2</label><input type="text" id="worship-team-2" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 3</label><input type="text" id="worship-team-3" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 4</label><input type="text" id="worship-team-4" placeholder="Name"/></div>
+        <div class="team-slot"><label>Member 5</label><input type="text" id="worship-team-5" placeholder="Name"/></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════
+     ORDER OF SERVICE TAB
+═══════════════════════════════ -->
+<div class="page" id="page-service">
+
+<!-- 1. PRAYER + SONG -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">1</div><div class="sec-title">Prayer &amp; Opening Song</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Person leading prayer</span><input type="text" id="prayer-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="prayer-time" placeholder="5" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="prayer-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;margin-top:4px">Song attached to prayer</div>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Song title</span><input type="text" id="prayer-song-title" placeholder="Song name"/></div>
+      <div class="ff"><span class="lbl">Song leader</span><input type="text" id="prayer-song-person" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb">
+      <span class="lbl">YouTube link</span>
+      <div style="display:flex;gap:8px">
+        <input type="url" id="prayer-song-yt" placeholder="https://youtube.com/watch?v=…" oninput="previewYT('prayer-song-yt','prayer-song-preview')"/>
+        <button class="btn btn-sm" onclick="openUrl('prayer-song-yt')">Open ↗</button>
+      </div>
+    </div>
+    <div class="yt-preview" id="prayer-song-preview"></div>
+    <div class="ff mb"><span class="lbl">Slides</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf,.key" onchange="showFile(this,'prayer-song-slides-name')">📎 Upload slides</label><span class="file-name" id="prayer-song-slides-name">No file</span></div></div>
+    <div class="ff mb"><span class="lbl">Notes</span><textarea id="prayer-notes" placeholder="Any notes…" style="min-height:55px"></textarea></div>
+  </div>
+</div>
+
+<!-- 2. WORSHIP -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">2</div><div class="sec-title">Worship</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Worship leader</span><input type="text" id="worship-leader" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="worship-time" placeholder="20" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="worship-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Worship Songs</div>
+    <div id="worship-songs"></div>
+    <button class="btn btn-sm" onclick="addSong('worship-songs','worship')">+ Add worship song</button>
+  </div>
+</div>
+
+<!-- 3. PRAISE -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">3</div><div class="sec-title">Praise</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Praise leader</span><input type="text" id="praise-leader" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="praise-time" placeholder="15" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="praise-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Praise Songs</div>
+    <div id="praise-songs"></div>
+    <button class="btn btn-sm" onclick="addSong('praise-songs','praise')">+ Add praise song</button>
+  </div>
+</div>
+
+<!-- 4. 1ST OFFERING -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">4</div><div class="sec-title">1st Offering</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Person leading</span><input type="text" id="off1-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="off1-time" placeholder="5" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="off1-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Airport Stars</div>
+    <div class="team-grid mb">
+      <div class="team-slot"><label>Star 1</label><input type="text" id="off1-as1" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 2</label><input type="text" id="off1-as2" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 3</label><input type="text" id="off1-as3" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 4</label><input type="text" id="off1-as4" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 5</label><input type="text" id="off1-as5" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb"><span class="lbl">Instrumental (YouTube)</span>
+      <div style="display:flex;gap:8px;margin-bottom:6px"><input type="url" id="off1-yt" placeholder="YouTube…" oninput="previewYT('off1-yt','off1-preview')"/><button class="btn btn-sm" onclick="openUrl('off1-yt')">Open ↗</button></div>
+      <div class="file-upload"><label class="file-label"><input type="file" accept="audio/*,video/*" onchange="showFile(this,'off1-file-name')">🎵 Upload instrumental</label><span class="file-name" id="off1-file-name">No file</span></div>
+    </div>
+    <div class="yt-preview" id="off1-preview"></div>
+  </div>
+</div>
+
+<!-- 5. ANNOUNCEMENTS -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">5</div><div class="sec-title">Announcements</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Person leading</span><input type="text" id="ann-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="ann-time" placeholder="5" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="ann-start"/></div>
+    </div>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Slides</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf,.key" onchange="showFile(this,'ann-slides-name')">📎 Upload slides</label><span class="file-name" id="ann-slides-name">No file</span></div></div>
+      <div class="ff"><span class="lbl">Instrumental</span><div class="file-upload"><label class="file-label"><input type="file" accept="audio/*,video/*" onchange="showFile(this,'ann-inst-name')">🎵 Upload</label><span class="file-name" id="ann-inst-name">No file</span></div></div>
+    </div>
+    <div class="ff"><span class="lbl">YouTube instrumental</span>
+      <div style="display:flex;gap:8px"><input type="url" id="ann-yt" placeholder="YouTube…" oninput="previewYT('ann-yt','ann-preview')"/><button class="btn btn-sm" onclick="openUrl('ann-yt')">Open ↗</button></div>
+    </div>
+    <div class="yt-preview" id="ann-preview"></div>
+  </div>
+</div>
+
+<!-- 6. SPECIAL MINISTRATION -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">6</div><div class="sec-title">Special Ministration</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="special-time" placeholder="15" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="special-start"/></div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Toggle on any that are ministering today. Each will appear in the final order of service.</p>
+
+    <!-- Dancing Stars -->
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="tog-dancing" onchange="togContent('dancing-content',this)"/><span class="toggle-slider"></span></label>
+      <span class="toggle-label">💃 Dancing Stars</span>
+    </div>
+    <div class="toggle-content" id="dancing-content">
+      <div class="row3 mb">
+        <div class="ff"><span class="lbl">Ministers</span><input type="text" id="dancing-minister" placeholder="Names of dancers"/></div>
+        <div class="ff"><span class="lbl">Time (mins)</span><input type="number" id="dancing-time" placeholder="5"/></div>
+        <div class="ff"><span class="lbl">Start time</span><input type="time" id="dancing-start"/></div>
+      </div>
+      <div class="row2 mb">
+        <div class="ff"><span class="lbl">Song used</span><input type="text" id="dancing-song" placeholder="Song name"/></div>
+        <div class="ff"><span class="lbl">YouTube / song link</span><div style="display:flex;gap:6px"><input type="url" id="dancing-yt" placeholder="YouTube…" oninput="previewYT('dancing-yt','dancing-preview')"/><button class="btn btn-sm" onclick="openUrl('dancing-yt')">↗</button></div></div>
+      </div>
+      <div class="ff mb"><span class="lbl">Slides used</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'dancing-slides-name')">📎 Slides</label><span class="file-name" id="dancing-slides-name">No file</span></div></div>
+      <div class="yt-preview" id="dancing-preview"></div>
+    </div>
+
+    <!-- Choir -->
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="tog-choir" onchange="togContent('choir-content',this)"/><span class="toggle-slider"></span></label>
+      <span class="toggle-label">🎶 Choir</span>
+    </div>
+    <div class="toggle-content" id="choir-content">
+      <div class="row3 mb">
+        <div class="ff"><span class="lbl">Ministers</span><input type="text" id="choir-minister" placeholder="Choir director / names"/></div>
+        <div class="ff"><span class="lbl">Time (mins)</span><input type="number" id="choir-time" placeholder="5"/></div>
+        <div class="ff"><span class="lbl">Start time</span><input type="time" id="choir-start"/></div>
+      </div>
+      <div class="row2 mb">
+        <div class="ff"><span class="lbl">Song used</span><input type="text" id="choir-song" placeholder="Song name"/></div>
+        <div class="ff"><span class="lbl">YouTube / song link</span><div style="display:flex;gap:6px"><input type="url" id="choir-yt" placeholder="YouTube…" oninput="previewYT('choir-yt','choir-preview')"/><button class="btn btn-sm" onclick="openUrl('choir-yt')">↗</button></div></div>
+      </div>
+      <div class="ff mb"><span class="lbl">Slides used</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'choir-slides-name')">📎 Slides</label><span class="file-name" id="choir-slides-name">No file</span></div></div>
+      <div class="yt-preview" id="choir-preview"></div>
+    </div>
+
+    <!-- Film Stars -->
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="tog-film" onchange="togContent('film-content',this)"/><span class="toggle-slider"></span></label>
+      <span class="toggle-label">🎥 Film Stars</span>
+    </div>
+    <div class="toggle-content" id="film-content">
+      <div class="row3 mb">
+        <div class="ff"><span class="lbl">Ministers</span><input type="text" id="film-minister" placeholder="Names"/></div>
+        <div class="ff"><span class="lbl">Time (mins)</span><input type="number" id="film-time" placeholder="5"/></div>
+        <div class="ff"><span class="lbl">Start time</span><input type="time" id="film-start"/></div>
+      </div>
+      <div class="row2 mb">
+        <div class="ff"><span class="lbl">Song used</span><input type="text" id="film-song" placeholder="Song name"/></div>
+        <div class="ff"><span class="lbl">YouTube / song link</span><div style="display:flex;gap:6px"><input type="url" id="film-yt" placeholder="YouTube…" oninput="previewYT('film-yt','film-preview')"/><button class="btn btn-sm" onclick="openUrl('film-yt')">↗</button></div></div>
+      </div>
+      <div class="ff mb"><span class="lbl">Slides used</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'film-slides-name')">📎 Slides</label><span class="file-name" id="film-slides-name">No file</span></div></div>
+      <div class="yt-preview" id="film-preview"></div>
+    </div>
+
+    <!-- Soloist -->
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="tog-soloist" onchange="togContent('soloist-content',this)"/><span class="toggle-slider"></span></label>
+      <span class="toggle-label">🎤 Soloist</span>
+    </div>
+    <div class="toggle-content" id="soloist-content">
+      <div class="row3 mb">
+        <div class="ff"><span class="lbl">Ministers / soloist name</span><input type="text" id="soloist-name" placeholder="Name"/></div>
+        <div class="ff"><span class="lbl">Time (mins)</span><input type="number" id="soloist-time" placeholder="5"/></div>
+        <div class="ff"><span class="lbl">Start time</span><input type="time" id="soloist-start"/></div>
+      </div>
+      <div class="row2 mb">
+        <div class="ff"><span class="lbl">Song used</span><input type="text" id="soloist-song" placeholder="Song name"/></div>
+        <div class="ff"><span class="lbl">YouTube / song link</span><div style="display:flex;gap:6px"><input type="url" id="soloist-yt" placeholder="YouTube…" oninput="previewYT('soloist-yt','soloist-preview')"/><button class="btn btn-sm" onclick="openUrl('soloist-yt')">↗</button></div></div>
+      </div>
+      <div class="ff mb"><span class="lbl">Slides used</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'soloist-slides-name')">📎 Slides</label><span class="file-name" id="soloist-slides-name">No file</span></div></div>
+      <div class="yt-preview" id="soloist-preview"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 7. PREACHING -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">7</div><div class="sec-title">Preaching</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Preacher</span><input type="text" id="preach-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="preach-time" placeholder="40" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="preach-start"/></div>
+    </div>
+    <div class="ff mb"><span class="lbl">Sermon title / scripture</span><input type="text" id="preach-title" placeholder="e.g. Walking in Faith — Romans 8:28"/></div>
+    <div class="ff mb"><span class="lbl">Notes</span><textarea id="preach-notes" placeholder="Key points, scripture references…"></textarea></div>
+    <div class="restricted-banner"><span class="lock-icon">🔒</span><span><strong>Preaching slides are restricted.</strong> PIN required to view.</span></div>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Upload preaching slides</span>
+        <div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf,.key" onchange="showFile(this,'preach-slides-name')">📎 Upload slides</label><span class="file-name" id="preach-slides-name">No file</span></div>
+      </div>
+      <div class="ff"><span class="lbl">View restricted slides</span><button class="btn btn-sm" onclick="openPin()" style="margin-top:4px">🔒 Enter PIN to view</button></div>
+    </div>
+    <div id="preach-slides-view" style="display:none;background:var(--purple-l);border-radius:10px;padding:1rem;margin-bottom:12px;font-size:13px;color:var(--purple)">
+      ✓ Slides unlocked. <span id="preach-slides-unlocked-name"></span>
+      <button class="btn btn-sm btn-red" style="margin-left:10px" onclick="lockSlides()">Lock again</button>
+    </div>
+    <div style="font-size:11px;color:var(--text3)">Default PIN: 7777</div>
+  </div>
+</div>
+
+<!-- 8. ALTAR CALL -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">8</div><div class="sec-title">Altar Call</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Altar call leader</span><input type="text" id="altar-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="altar-time" placeholder="10" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="altar-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Altar Call Song</div>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Song title</span><input type="text" id="altar-song" placeholder="Song name"/></div>
+      <div class="ff"><span class="lbl">Singer</span><input type="text" id="altar-singer" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb"><span class="lbl">YouTube link</span><div style="display:flex;gap:8px"><input type="url" id="altar-yt" placeholder="YouTube…" oninput="previewYT('altar-yt','altar-preview')"/><button class="btn btn-sm" onclick="openUrl('altar-yt')">Open ↗</button></div></div>
+    <div class="yt-preview" id="altar-preview"></div>
+    <div class="ff mb"><span class="lbl">Slides</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'altar-slides-name')">📎 Upload slides</label><span class="file-name" id="altar-slides-name">No file</span></div></div>
+  </div>
+</div>
+
+<!-- 9. COMMUNION (after preaching) -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">9</div><div class="sec-title">Communion <span style="font-size:11px;color:var(--text3);font-family:var(--sans);font-weight:400">(after preaching)</span></div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Person leading</span><input type="text" id="comm-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="comm-time" placeholder="10" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="comm-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Airport Stars — Communion</div>
+    <div class="team-grid mb">
+      <div class="team-slot"><label>Star 1</label><input type="text" id="comm-as1" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 2</label><input type="text" id="comm-as2" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 3</label><input type="text" id="comm-as3" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 4</label><input type="text" id="comm-as4" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 5</label><input type="text" id="comm-as5" placeholder="Name"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Communion Song</div>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Song title</span><input type="text" id="comm-song" placeholder="Song name"/></div>
+      <div class="ff"><span class="lbl">Singer / leader</span><input type="text" id="comm-singer" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb"><span class="lbl">YouTube link</span><div style="display:flex;gap:8px"><input type="url" id="comm-yt" placeholder="YouTube…" oninput="previewYT('comm-yt','comm-preview')"/><button class="btn btn-sm" onclick="openUrl('comm-yt')">Open ↗</button></div></div>
+    <div class="yt-preview" id="comm-preview"></div>
+    <div class="ff mb"><span class="lbl">Slides</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'comm-slides-name')">📎 Upload slides</label><span class="file-name" id="comm-slides-name">No file</span></div></div>
+  </div>
+</div>
+
+<!-- 10. 2ND OFFERING -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">10</div><div class="sec-title">2nd Offering <span style="font-size:11px;color:var(--text3);font-family:var(--sans);font-weight:400">(after preaching)</span></div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">Person leading</span><input type="text" id="off2-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="off2-time" placeholder="5" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="off2-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Airport Stars — 2nd Offering</div>
+    <div class="team-grid mb">
+      <div class="team-slot"><label>Star 1</label><input type="text" id="off2-as1" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 2</label><input type="text" id="off2-as2" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 3</label><input type="text" id="off2-as3" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 4</label><input type="text" id="off2-as4" placeholder="Name"/></div>
+      <div class="team-slot"><label>Star 5</label><input type="text" id="off2-as5" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb"><span class="lbl">Instrumental (YouTube)</span>
+      <div style="display:flex;gap:8px;margin-bottom:6px"><input type="url" id="off2-yt" placeholder="YouTube…" oninput="previewYT('off2-yt','off2-preview')"/><button class="btn btn-sm" onclick="openUrl('off2-yt')">Open ↗</button></div>
+      <div class="file-upload"><label class="file-label"><input type="file" accept="audio/*,video/*" onchange="showFile(this,'off2-file-name')">🎵 Upload instrumental</label><span class="file-name" id="off2-file-name">No file</span></div>
+    </div>
+    <div class="yt-preview" id="off2-preview"></div>
+  </div>
+</div>
+
+<!-- 11. END MC / GRACE -->
+<div class="sec">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <div class="sec-num">11</div><div class="sec-title">End MC — Grace &amp; Closing</div><span class="sec-arr open">▾</span>
+  </div>
+  <div class="sec-body open">
+    <div class="row3 mb">
+      <div class="ff"><span class="lbl">MC / person closing</span><input type="text" id="end-person" placeholder="Name"/></div>
+      <div class="ff"><span class="lbl">Time allocation (mins)</span><input type="number" id="end-time" placeholder="5" min="1"/></div>
+      <div class="ff"><span class="lbl">Start time</span><input type="time" id="end-start"/></div>
+    </div>
+    <div style="font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Grace Song</div>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Song title</span><input type="text" id="end-song" placeholder="Song name"/></div>
+      <div class="ff"><span class="lbl">Singer / leader</span><input type="text" id="end-singer" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb"><span class="lbl">YouTube link</span><div style="display:flex;gap:8px"><input type="url" id="end-yt" placeholder="YouTube…" oninput="previewYT('end-yt','end-preview')"/><button class="btn btn-sm" onclick="openUrl('end-yt')">Open ↗</button></div></div>
+    <div class="yt-preview" id="end-preview"></div>
+    <div class="row2">
+      <div class="ff"><span class="lbl">Grace slides</span><div class="file-upload"><label class="file-label"><input type="file" accept=".pptx,.pdf" onchange="showFile(this,'end-slides-name')">📎 Grace slides</label><span class="file-name" id="end-slides-name">No file</span></div></div>
+      <div class="ff"><span class="lbl">Closing instrumental</span><div class="file-upload"><label class="file-label"><input type="file" accept="audio/*,video/*" onchange="showFile(this,'end-inst-name')">🎵 Instrumental</label><span class="file-name" id="end-inst-name">No file</span></div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end page-service -->
+
+<!-- ═══════════════════════════════
+     SUMMARY TAB
+═══════════════════════════════ -->
+<div class="page" id="page-summary">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px">
+    <div style="font-family:var(--serif);font-size:22px;font-weight:500">Service Summary</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-gold" onclick="generateSummary()">🔄 Refresh summary</button>
+      <button class="btn btn-navy" onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>
+  <div id="summary-output">
+    <div style="text-align:center;padding:3rem;color:var(--text3);font-size:13px">Click "Refresh summary" to generate the report</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA & STORAGE ──────────────────────
+const KEY='goye_service_v1';
+let PIN=localStorage.getItem('goye_pin')||'7777';
+let pinsUnlocked=false;
+let songCounters={worship:0,praise:0};
+
+function saveAll(){
+  const d={};
+  document.querySelectorAll('input,select,textarea').forEach(el=>{
+    if(el.id&&el.type!=='file'&&el.type!=='checkbox') d[el.id]=el.value;
+    if(el.id&&el.type==='checkbox') d[el.id]=el.checked;
+  });
+  localStorage.setItem(KEY,JSON.stringify(d));
+  toast('✓ Saved');
+}
+
+function loadAll(){
+  const d=JSON.parse(localStorage.getItem(KEY)||'{}');
+  Object.entries(d).forEach(([id,val])=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    if(el.type==='checkbox'){el.checked=val;if(val) togContent(el.id.replace('tog-','')+ '-content',el);}
+    else el.value=val;
+  });
+  calcTotals();
+}
+
+// ── TABS ───────────────────────────────
+function goTab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='summary') generateSummary();
+}
+
+// ── SECTION TOGGLE ─────────────────────
+function togSec(hdr){
+  const body=hdr.nextElementSibling;
+  const arr=hdr.querySelector('.sec-arr');
+  const open=body.style.display==='block'||body.classList.contains('open');
+  body.style.display=open?'none':'block';
+  body.classList.toggle('open',!open);
+  if(arr) arr.classList.toggle('open',!open);
+}
+
+// ── TOGGLE CONTENT ─────────────────────
+function togContent(id,cb){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('open',cb.checked);
+}
+
+// ── ATTENDANCE ─────────────────────────
+function calcTotals(){
+  const zConf=+document.getElementById('a-z-conf').value||0;
+  const zFt=+document.getElementById('a-z-ft').value||0;
+  const zVis=+document.getElementById('a-z-vis').value||0;
+  const zoConf=+document.getElementById('a-zo-conf').value||0;
+  const zoFt=+document.getElementById('a-zo-ft').value||0;
+  const zoVis=+document.getElementById('a-zo-vis').value||0;
+  document.getElementById('a-z-total').textContent='Zuid total: '+(zConf+zFt+zVis);
+  document.getElementById('a-zo-total').textContent='Zuidoost total: '+(zoConf+zoFt+zoVis);
+  document.getElementById('st-total-conf').textContent=zConf+zoConf;
+  document.getElementById('st-total-ft').textContent=zFt+zoFt;
+  document.getElementById('st-total-vis').textContent=zVis+zoVis;
+  document.getElementById('st-grand').textContent=(zConf+zFt+zVis+zoConf+zoFt+zoVis);
+}
+
+// ── SONGS ──────────────────────────────
+function addSong(containerId,prefix){
+  const idx=++songCounters[prefix];
+  const container=document.getElementById(containerId);
+  const div=document.createElement('div');
+  div.className='song-row';
+  div.id=`${prefix}-song-${idx}`;
+  div.innerHTML=`
+    <div class="song-row-title">Song ${idx}</div>
+    <button class="song-remove" onclick="this.parentElement.remove()" title="Remove">✕</button>
+    <div class="row2 mb">
+      <div class="ff"><span class="lbl">Song title</span><input type="text" id="${prefix}-s${idx}-title" placeholder="Song name"/></div>
+      <div class="ff"><span class="lbl">Leader / singer</span><input type="text" id="${prefix}-s${idx}-person" placeholder="Name"/></div>
+    </div>
+    <div class="ff mb">
+      <span class="lbl">YouTube link</span>
+      <div style="display:flex;gap:8px">
+        <input type="url" id="${prefix}-s${idx}-yt" placeholder="https://youtube.com/watch?v=…"
+          oninput="previewYT('${prefix}-s${idx}-yt','${prefix}-s${idx}-ytprev')"/>
+        <button class="btn btn-sm" onclick="openUrl('${prefix}-s${idx}-yt')">Open ↗</button>
+      </div>
+    </div>
+    <div class="yt-preview" id="${prefix}-s${idx}-ytprev"></div>
+    <div class="ff"><span class="lbl">Slides</span>
+      <div class="file-upload">
+        <label class="file-label"><input type="file" accept=".pptx,.pdf,.key" onchange="showFile(this,'${prefix}-s${idx}-slides-name')">📎 Upload slides</label>
+        <span class="file-name" id="${prefix}-s${idx}-slides-name">No file</span>
+      </div>
+    </div>`;
+  container.appendChild(div);
+}
+
+// ── YOUTUBE PREVIEW ─────────────────────
+function previewYT(inputId,previewId){
+  const url=document.getElementById(inputId)?.value||'';
+  const container=document.getElementById(previewId);
+  if(!container) return;
+  const id=extractYTId(url);
+  if(id){
+    container.classList.add('show');
+    container.innerHTML=`<iframe class="yt-embed" src="https://www.youtube.com/embed/${id}" allowfullscreen loading="lazy"></iframe>`;
+  } else {
+    container.classList.remove('show');
+    container.innerHTML='';
+  }
+}
+
+function extractYTId(url){
+  if(!url) return null;
+  const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/);
+  return m?m[1]:null;
+}
+
+function openUrl(inputId){
+  const url=document.getElementById(inputId)?.value?.trim();
+  if(url) window.open(url,'_blank');
+}
+
+// ── FILE DISPLAY ───────────────────────
+function showFile(input,nameId){
+  const el=document.getElementById(nameId);
+  if(el) el.textContent=input.files[0]?input.files[0].name:'No file';
+  // if preaching slides, store file name for restricted view
+  if(input.closest('#page-service')){
+    const pn=document.getElementById('preach-slides-unlocked-name');
+    if(pn&&input.accept.includes('.pptx')) pn.textContent=input.files[0]?input.files[0].name:'';
+  }
+}
+
+// ── PIN / RESTRICTED SLIDES ─────────────
+function openPin(){document.getElementById('pin-overlay').classList.add('open');document.getElementById('pin-input').value='';document.getElementById('pin-err').style.display='none';setTimeout(()=>document.getElementById('pin-input').focus(),100);}
+function closePin(){document.getElementById('pin-overlay').classList.remove('open');}
+function checkPin(){if(document.getElementById('pin-input').value.length>=4) submitPin();}
+function submitPin(){
+  const entered=document.getElementById('pin-input').value;
+  if(entered===PIN){
+    pinsUnlocked=true;
+    document.getElementById('pin-overlay').classList.remove('open');
+    document.getElementById('preach-slides-view').style.display='block';
+    toast('✓ Slides unlocked');
+  } else {
+    document.getElementById('pin-err').style.display='block';
+    document.getElementById('pin-input').value='';
+  }
+}
+function lockSlides(){pinsUnlocked=false;document.getElementById('preach-slides-view').style.display='none';}
+document.getElementById('pin-overlay').addEventListener('click',function(e){if(e.target===this)closePin();});
+document.getElementById('pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')submitPin();});
+
+// ── SUMMARY GENERATOR ─────────────────
+function gv(id){return(document.getElementById(id)?.value||'').trim();}
+function generateSummary(){
+  const date=gv('a-date')||'—';
+  const time=gv('a-time')||'—';
+  const zConf=gv('a-z-conf')||'0';const zFt=gv('a-z-ft')||'0';const zVis=gv('a-z-vis')||'0';
+  const zoConf=gv('a-zo-conf')||'0';const zoFt=gv('a-zo-ft')||'0';const zoVis=gv('a-zo-vis')||'0';
+
+  const airport=[1,2,3,4,5].map(i=>gv('airport-'+i)).filter(Boolean).join(', ')||'—';
+  const dancing=[1,2,3,4,5].map(i=>gv('dance-team-'+i)).filter(Boolean).join(', ')||'—';
+  const media=[1,2,3,4,5].map(i=>gv('media-'+i)).filter(Boolean).join(', ')||'—';
+  const setup=[1,2,3,4,5].map(i=>gv('setup-'+i)).filter(Boolean).join(', ')||'—';
+  const ushers=[1,2,3,4,5].map(i=>gv('usher-'+i)).filter(Boolean).join(', ')||'—';
+  const worship_team=[1,2,3,4,5].map(i=>gv('worship-team-'+i)).filter(Boolean).join(', ')||'—';
+
+  function t(id){const v=gv(id);return v?v+' min':'—';}
+  function st(id){const v=gv(id);return v?'<span style="color:var(--text3);font-size:11px">'+v+'</span>':'';}
+
+  // specials
+  const specials=[];
+  if(document.getElementById('tog-dancing')?.checked)
+    specials.push({name:'Dancing Stars',person:gv('dancing-minister'),time:t('dancing-time'),start:gv('dancing-start'),notes:gv('dancing-song')});
+  if(document.getElementById('tog-choir')?.checked)
+    specials.push({name:'Choir',person:gv('choir-minister'),time:t('choir-time'),start:gv('choir-start'),notes:gv('choir-song')});
+  if(document.getElementById('tog-film')?.checked)
+    specials.push({name:'Film Stars',person:gv('film-minister'),time:t('film-time'),start:gv('film-start'),notes:gv('film-song')});
+  if(document.getElementById('tog-soloist')?.checked)
+    specials.push({name:'Soloist',person:gv('soloist-name'),time:t('soloist-time'),start:gv('soloist-start'),notes:gv('soloist-song')});
+
+  const rows=[
+    {n:'1', item:'Prayer & Opening Song', person:gv('prayer-person'), time:t('prayer-time'), start:gv('prayer-start'), notes:gv('prayer-song-title')?'Song: '+gv('prayer-song-title'):''},
+    {n:'2', item:'Worship',               person:gv('worship-leader'), time:t('worship-time'), start:gv('worship-start'), notes:''},
+    {n:'3', item:'Praise',                person:gv('praise-leader'),  time:t('praise-time'),  start:gv('praise-start'),  notes:''},
+    {n:'4', item:'1st Offering',          person:gv('off1-person'),    time:t('off1-time'),    start:gv('off1-start'),    notes:''},
+    {n:'5', item:'Announcements',         person:gv('ann-person'),     time:t('ann-time'),     start:gv('ann-start'),     notes:''},
+    ...specials.map((s,i)=>({n:'6'+(specials.length>1?'.'+(i+1):''), item:'Special — '+s.name, person:s.person, time:s.time, start:s.start, notes:s.notes?'Song: '+s.notes:''})),
+    {n:'7', item:'Preaching',             person:gv('preach-person'),  time:t('preach-time'),  start:gv('preach-start'),  notes:gv('preach-title')},
+    {n:'8', item:'Altar Call',            person:gv('altar-person'),   time:t('altar-time'),   start:gv('altar-start'),   notes:'Singer: '+gv('altar-singer')+(gv('altar-song')?' — '+gv('altar-song'):'')},
+    {n:'9', item:'Communion',             person:gv('comm-person'),    time:t('comm-time'),    start:gv('comm-start'),    notes:'Song: '+gv('comm-song')},
+    {n:'10',item:'2nd Offering',          person:gv('off2-person'),    time:t('off2-time'),    start:gv('off2-start'),    notes:''},
+    {n:'11',item:'Grace & Closing',       person:gv('end-person'),     time:t('end-time'),     start:gv('end-start'),     notes:'Song: '+gv('end-song')},
+  ];
+
+  const html=`
+    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px">
+      <div style="background:var(--navy);color:#fff;padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--serif);font-size:18px;font-weight:500">Go Ye Amsterdam — Service Report</div>
+        <div style="font-size:12px;opacity:.7">${date} · ${time}</div>
+      </div>
+      <div style="padding:1.25rem 1.5rem">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Attendance — Zuid</div>
+            <table style="width:100%;font-size:13px;border-collapse:collapse">
+              <tr><td style="padding:3px 0;color:var(--text2)">Confirmations</td><td style="text-align:right;font-weight:600">${zConf}</td></tr>
+              <tr><td style="padding:3px 0;color:var(--text2)">First timers</td><td style="text-align:right;font-weight:600">${zFt}</td></tr>
+              <tr><td style="padding:3px 0;color:var(--text2)">Visitors</td><td style="text-align:right;font-weight:600">${zVis}</td></tr>
+              <tr style="border-top:1px solid var(--border)"><td style="padding:5px 0;font-weight:600">Total</td><td style="text-align:right;font-weight:600;color:var(--navy)">${(+zConf)+(+zFt)+(+zVis)}</td></tr>
+            </table>
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Attendance — Zuidoost</div>
+            <table style="width:100%;font-size:13px;border-collapse:collapse">
+              <tr><td style="padding:3px 0;color:var(--text2)">Confirmations</td><td style="text-align:right;font-weight:600">${zoConf}</td></tr>
+              <tr><td style="padding:3px 0;color:var(--text2)">First timers</td><td style="text-align:right;font-weight:600">${zoFt}</td></tr>
+              <tr><td style="padding:3px 0;color:var(--text2)">Visitors</td><td style="text-align:right;font-weight:600">${zoVis}</td></tr>
+              <tr style="border-top:1px solid var(--border)"><td style="padding:5px 0;font-weight:600">Total</td><td style="text-align:right;font-weight:600;color:var(--navy)">${(+zoConf)+(+zoFt)+(+zoVis)}</td></tr>
+            </table>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Teams</div>
+        <table class="summary-table" style="margin-bottom:1.25rem">
+          <tr><th>Team</th><th>Members</th></tr>
+          <tr><td>Airport Stars</td><td>${airport}</td></tr>
+          <tr><td>Dancing Stars</td><td>${dancing}</td></tr>
+          <tr><td>Media</td><td>${media}</td></tr>
+          <tr><td>Setup</td><td>${setup}</td></tr>
+          <tr><td>Ushers</td><td>${ushers}</td></tr>
+          <tr><td>Worship Team</td><td>${worship_team}</td></tr>
+        </table>
+        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Order of Service</div>
+        <table class="summary-table">
+          <tr><th>#</th><th>Item</th><th>Person</th><th>Start / Duration</th><th>Notes / Song</th></tr>
+          ${rows.map(r=>`<tr><td style="color:var(--text3)">${r.n}</td><td><strong>${r.item}</strong></td><td>${r.person||'—'}</td><td>${r.start?'<strong>'+r.start+'</strong> · ':''} ${r.time}</td><td style="color:var(--text2)">${r.notes||'—'}</td></tr>`).join('')}
+        </table>
+      </div>
+    </div>`;
+  document.getElementById('summary-output').innerHTML=html;
+}
+
+// ── EXPORT ─────────────────────────────
+function exportJSON(){
+  const d={};
+  document.querySelectorAll('input,select,textarea').forEach(el=>{
+    if(el.id&&el.type!=='file'&&el.type!=='checkbox') d[el.id]=el.value;
+    if(el.id&&el.type==='checkbox') d[el.id]=el.checked;
+  });
+  const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const date=document.getElementById('a-date')?.value||new Date().toISOString().slice(0,10);
+  a.href=url;a.download='goye-service-'+date+'.json';a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported ✓');
+}
+
+// ── TOAST ──────────────────────────────
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// ── INIT ───────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  loadAll();
+  // autosave on input
+  document.addEventListener('input',()=>{clearTimeout(window._saveTimer);window._saveTimer=setTimeout(saveAll,1500);});
+  document.addEventListener('change',()=>{clearTimeout(window._saveTimer);window._saveTimer=setTimeout(saveAll,1500);});
+});
+</script>
+</body>
+</html>
