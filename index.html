@@ -1272,53 +1272,56 @@ function generateSummary(){
   items.sort((a,b)=>a.sort-b.sort);
 
   // Build rows
-  const rows=items.map((r,i)=>({n:i+1,...r}))
-  const html=`
-    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px">
-      <div style="background:var(--navy);color:#fff;padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center">
-        <div style="font-family:var(--serif);font-size:18px;font-weight:500">Go Ye Amsterdam — Service Report</div>
-        <div style="font-size:12px;opacity:.7">${date} · ${time}</div>
-      </div>
-      <div style="padding:1.25rem 1.5rem">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
-          <div>
-            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Attendance — Zuid</div>
-            <table style="width:100%;font-size:13px;border-collapse:collapse">
-              <tr><td style="padding:3px 0;color:var(--text2)">Confirmations</td><td style="text-align:right;font-weight:600">${zConf}</td></tr>
-              <tr><td style="padding:3px 0;color:var(--text2)">First timers</td><td style="text-align:right;font-weight:600">${zFt}</td></tr>
-              <tr><td style="padding:3px 0;color:var(--text2)">Visitors</td><td style="text-align:right;font-weight:600">${zVis}</td></tr>
-              <tr style="border-top:1px solid var(--border)"><td style="padding:5px 0;font-weight:600">Total</td><td style="text-align:right;font-weight:600;color:var(--navy)">${(+zConf)+(+zFt)+(+zVis)}</td></tr>
-            </table>
-            ${(()=>{const rows=getLeadersSummary('z-leaders');return rows?`<div style="margin-top:10px"><div style="font-size:10px;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Leaders &amp; who they brought</div><table style="width:100%;border-collapse:collapse"><tr style="background:#f5f5f5"><th style="padding:4px 10px;font-size:10px;text-align:left">Leader</th><th style="padding:4px 10px;font-size:10px;text-align:center;color:var(--navy)">Total</th><th style="padding:4px 10px;font-size:10px;text-align:center;color:var(--green)">FTs</th></tr>${rows}</table></div>`:''})()}
-          </div>
-          <div>
-            <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Attendance — Zuidoost</div>
-            <table style="width:100%;font-size:13px;border-collapse:collapse">
-              <tr><td style="padding:3px 0;color:var(--text2)">Confirmations</td><td style="text-align:right;font-weight:600">${zoConf}</td></tr>
-              <tr><td style="padding:3px 0;color:var(--text2)">First timers</td><td style="text-align:right;font-weight:600">${zoFt}</td></tr>
-              <tr><td style="padding:3px 0;color:var(--text2)">Visitors</td><td style="text-align:right;font-weight:600">${zoVis}</td></tr>
-              <tr style="border-top:1px solid var(--border)"><td style="padding:5px 0;font-weight:600">Total</td><td style="text-align:right;font-weight:600;color:var(--navy)">${(+zoConf)+(+zoFt)+(+zoVis)}</td></tr>
-            </table>
-            ${(()=>{const rows=getLeadersSummary('zo-leaders');return rows?`<div style="margin-top:10px"><div style="font-size:10px;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Leaders &amp; who they brought</div><table style="width:100%;border-collapse:collapse"><tr style="background:#f5f5f5"><th style="padding:4px 10px;font-size:10px;text-align:left">Leader</th><th style="padding:4px 10px;font-size:10px;text-align:center;color:var(--navy)">Total</th><th style="padding:4px 10px;font-size:10px;text-align:center;color:var(--green)">FTs</th></tr>${rows}</table></div>`:''})()}
-          </div>
-        </div>
-        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Teams</div>
-        <table class="summary-table" style="margin-bottom:1.25rem">
-          <tr><th>Team</th><th>Members</th></tr>
-          <tr><td>Airport Stars</td><td>${airport}</td></tr>
-          <tr><td>Dancing Stars</td><td>${dancing}</td></tr>
-          <tr><td>Media</td><td>${media}</td></tr>
-          <tr><td>Setup</td><td>${setup}</td></tr>
-          <tr><td>Ushers</td><td>${ushers}</td></tr>
-          <tr><td>Worship Team</td><td>${worship_team}</td></tr>
-        </table>
-        <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Order of Service</div>
-        <table class="summary-table">
-          <tr><th>#</th><th>Item</th><th>Person</th><th>Start · Duration</th><th>Notes / Song</th></tr>
-          ${rows.map(r=>`<tr><td style="color:var(--text3);font-size:12px;width:20px">${r.n}</td><td><strong>${r.item}</strong></td><td style="color:var(--text2)">${r.person||'—'}</td><td style="white-space:nowrap">${r.start?'<strong>'+r.start+'</strong>':''} ${r.duration!='—'?'<span style="color:var(--text3)">'+r.duration+'</span>':''}</td><td style="color:var(--text2);font-size:12px">${r.notes||'—'}</td></tr>`).join('')}
-        </table>
-      </div>
-    </div>`;
+  const rows=items.map((r,i)=>({n:i+1,...r}));
+  const serviceTitle = gv('a-title')||'Go Ye Amsterdam';
+  const html='<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;margin-bottom:14px">'
+    +'<div style="background:#0d1b2a;color:#fff;padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center">'
+    +'<div style="font-size:18px;font-weight:500;font-family:Playfair Display,serif">'+serviceTitle+'</div>'
+    +'<div style="font-size:12px;opacity:.7">'+date+' · '+svctime+'</div>'
+    +'</div>'
+    +'<div style="padding:1.25rem 1.5rem">'
+    // Attendance
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">'
+    +'<div><div style="font-size:11px;font-weight:600;color:#8a9ab0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Attendance — Zuid</div>'
+    +'<table style="width:100%;font-size:13px;border-collapse:collapse">'
+    +'<tr><td style="padding:3px 0;color:#4a5568">Confirmations</td><td style="text-align:right;font-weight:600">'+zConf+'</td></tr>'
+    +'<tr><td style="padding:3px 0;color:#4a5568">First Timers</td><td style="text-align:right;font-weight:600;color:#276749">'+zFt+'</td></tr>'
+    +'<tr style="border-top:1px solid #e2e8f0"><td style="padding:5px 0;font-weight:600">Total</td><td style="text-align:right;font-weight:600;color:#0d1b2a">'+(+zConf+parseInt(zFt||0))+'</td></tr>'
+    +'</table></div>'
+    +'<div><div style="font-size:11px;font-weight:600;color:#8a9ab0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Attendance — Zuidoost</div>'
+    +'<table style="width:100%;font-size:13px;border-collapse:collapse">'
+    +'<tr><td style="padding:3px 0;color:#4a5568">Confirmations</td><td style="text-align:right;font-weight:600">'+zoConf+'</td></tr>'
+    +'<tr><td style="padding:3px 0;color:#4a5568">First Timers</td><td style="text-align:right;font-weight:600;color:#276749">'+zoFt+'</td></tr>'
+    +'<tr style="border-top:1px solid #e2e8f0"><td style="padding:5px 0;font-weight:600">Total</td><td style="text-align:right;font-weight:600;color:#0d1b2a">'+(+zoConf+parseInt(zoFt||0))+'</td></tr>'
+    +'</table></div>'
+    +'</div>'
+    // Teams
+    +'<div style="font-size:11px;font-weight:600;color:#8a9ab0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Teams</div>'
+    +'<table style="width:100%;border-collapse:collapse;margin-bottom:1.25rem;font-size:13px">'
+    +'<tr style="background:#0d1b2a"><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px;letter-spacing:.06em">Team</th><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px;letter-spacing:.06em">Members</th></tr>'
+    +(airport!='—'?'<tr><td style="padding:7px 12px;border-bottom:1px solid #eee">Airport Stars</td><td style="padding:7px 12px;border-bottom:1px solid #eee">'+airport+'</td></tr>':'')
+    +(dancing!='—'?'<tr><td style="padding:7px 12px;border-bottom:1px solid #eee">Dancing Stars</td><td style="padding:7px 12px;border-bottom:1px solid #eee">'+dancing+'</td></tr>':'')
+    +(media!='—'?'<tr><td style="padding:7px 12px;border-bottom:1px solid #eee">Media</td><td style="padding:7px 12px;border-bottom:1px solid #eee">'+media+'</td></tr>':'')
+    +(setup!='—'?'<tr><td style="padding:7px 12px;border-bottom:1px solid #eee">Setup</td><td style="padding:7px 12px;border-bottom:1px solid #eee">'+setup+'</td></tr>':'')
+    +(ushers!='—'?'<tr><td style="padding:7px 12px;border-bottom:1px solid #eee">Ushers</td><td style="padding:7px 12px;border-bottom:1px solid #eee">'+ushers+'</td></tr>':'')
+    +(worship_team!='—'?'<tr><td style="padding:7px 12px">Worship Team</td><td style="padding:7px 12px">'+worship_team+'</td></tr>':'')
+    +'</table>'
+    // Order of service
+    +'<div style="font-size:11px;font-weight:600;color:#8a9ab0;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Order of Service</div>'
+    +(rows.length===0?'<p style="color:#8a9ab0;font-size:13px">No active items — toggle sections on and click Refresh.</p>'
+    :'<table style="width:100%;border-collapse:collapse;font-size:13px">'
+    +'<tr style="background:#0d1b2a"><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px">#</th><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px">Item</th><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px">Person</th><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px">Start</th><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px">Duration</th><th style="padding:8px 12px;text-align:left;color:#c9a84c;font-size:11px">Notes</th></tr>'
+    +rows.map(function(r,idx){
+        var bg=idx%2===0?'#fff':'#f8fafc';
+        return '<tr style="background:'+bg+'"><td style="padding:8px 12px;border-bottom:1px solid #eee;color:#8a9ab0">'+r.n+'</td>'
+          +'<td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600">'+r.item+'</td>'
+          +'<td style="padding:8px 12px;border-bottom:1px solid #eee;color:#4a5568">'+(r.person||'—')+'</td>'
+          +'<td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:600">'+(r.start||'—')+'</td>'
+          +'<td style="padding:8px 12px;border-bottom:1px solid #eee;color:#4a5568">'+(r.duration||'—')+'</td>'
+          +'<td style="padding:8px 12px;border-bottom:1px solid #eee;color:#4a5568;font-size:12px">'+(r.notes||'—')+'</td></tr>';
+      }).join('')
+    +'</table>')
+    +'</div></div>';
   document.getElementById('summary-output').innerHTML=html;
 }
 
